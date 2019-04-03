@@ -14,9 +14,9 @@ const initialState = {
 };
 
 
-const graph = (state = initialState, action) => produce(state, draft => {
+const base = (state = initialState, action) => produce(state, draft => {
 
 })
 
-export default graph;
+export default base;
 
