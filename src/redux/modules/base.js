@@ -1,11 +1,8 @@
 import produce from "immer";
-// import { Map } from 'immutable';
-// import { handleActions, createAction } from 'redux-actions';
-// const SET_HEADER_VISIBILITY = 'base/SET_HEADER_VISIBILITY'; // 헤더 렌더링 여부 설정
-// export const setHeaderVisibility = createAction(SET_HEADER_VISIBILITY); // visible
-// export default handleActions({
-//     [SET_HEADER_VISIBILITY]: (state, action) => state.setIn(['header', 'visible'], action.payload)
-// }, initialState);
+import { handleActions, createAction } from 'redux-actions';
+
+const SET_HEADER_VISIBILITY = 'base/SET_HEADER_VISIBILITY'; 
+export const changeVisible = createAction(SET_HEADER_VISIBILITY);
 
 const initialState = {
   header: {
@@ -13,10 +10,22 @@ const initialState = {
   }
 };
 
+export default handleActions({
+    [SET_HEADER_VISIBILITY]: (state, action) => produce(state, draft => {
+      console.log(action.payload)
+      draft.header.visible = action.payload;
+    }),
+}, initialState);
 
-const base = (state = initialState, action) => produce(state, draft => {
+// const base = (state = initialState, action) => produce(state, draft => {
+//   switch (action.type) {
+//     case SET_HEADER_VISIBILITY:
+//       console.log("이쪽"+action.header.visible)
+//       return draft.header.visible = action.header.visible;
+//     default:
+//       return state;
+//   }
+// })
 
-})
-
-export default base;
+// export default base;
 

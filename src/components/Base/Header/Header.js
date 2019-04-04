@@ -23,19 +23,19 @@ const WhiteBackground = styled.div`
 
 // 해더의 내용
 const HeaderContents = styled.div`
-    width: 1200px;
-    height: 55px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  width: 1200px;
+  height: 55px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-    padding-right: 1rem;
-    padding-left: 1rem;
-    ${media.wide`
+  padding-right: 1rem;
+  padding-left: 1rem;
+  ${media.wide`
         width: 992px;
     `}
 
-    ${media.tablet`
+  ${media.tablet`
         width: 100%;
     `}
 `;
@@ -59,19 +59,19 @@ const GradientBorder = styled.div`
     background: linear-gradient(to right, ${oc.teal[6]}, ${oc.cyan[5]});
 `;
 
-const Header = ({children}) => {
-    return (
-        <Positioner>
-            <WhiteBackground>
-                <HeaderContents>
-                    <Logo>HEURM</Logo>
-                    <Spacer/>
-                    {children}
-                </HeaderContents>
-            </WhiteBackground>
-            <GradientBorder/>
-        </Positioner>
-    );
+const Header = ({ children }) => {
+	return (
+		<Positioner>
+			<WhiteBackground>
+				<HeaderContents>
+					<Logo>HEURM</Logo>
+					<Spacer />
+					{children}
+				</HeaderContents>
+			</WhiteBackground>
+			<GradientBorder />
+		</Positioner>
+	);
 };
 
 export default Header;
