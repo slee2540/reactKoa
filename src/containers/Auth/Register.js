@@ -7,7 +7,8 @@ import {
   AuthContent,
   InputWithLabel,
   AuthButton,
-  RightAlignedLink
+  RightAlignedLink,
+  AuthError 
 } from "components/Auth";
 
 class Register extends Component {
@@ -114,7 +115,7 @@ class Register extends Component {
   };
 
   render() {
-    // const { error } = this.props;
+    const { error } = this.props;
     const { email, username, password, passwordConfirm } = this.props.form;
     const { handleChange } = this;
 
@@ -153,7 +154,7 @@ class Register extends Component {
           onChange={handleChange}
         />
         {
-          // error && <AuthError>{error}</AuthError>
+          error && <AuthError>{error}</AuthError>
         }
         <AuthButton>회원가입</AuthButton>
         <RightAlignedLink to="/auth/login">로그인</RightAlignedLink>
@@ -165,7 +166,8 @@ class Register extends Component {
 // export default Register;
 export default connect(
   (state) => ({
-    form: state.auth.login.form
+    form: state.auth.register.form,
+    error: state.auth.register.error
   }),
   (dispatch) => ({
     AuthActions: bindActionCreators(authActions, dispatch)
