@@ -12,7 +12,7 @@ const initialState = {
 
 export default handleActions({
     [SET_HEADER_VISIBILITY]: (state, action) => produce(state, draft => {
-      console.log(action.payload)
+      // console.log(action.payload)
       draft.header.visible = action.payload;
     }),
 }, initialState);
