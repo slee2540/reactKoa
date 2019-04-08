@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import oc from 'open-color';
 import { shadow, media } from 'lib/styleUtils';
 
@@ -23,29 +24,30 @@ const WhiteBackground = styled.div`
 
 // 해더의 내용
 const HeaderContents = styled.div`
-  width: 1200px;
-  height: 55px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  padding-right: 1rem;
-  padding-left: 1rem;
-  ${media.wide`
+    width: 1200px;
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    ${media.wide`
         width: 992px;
     `}
 
-  ${media.tablet`
+    ${media.tablet`
         width: 100%;
     `}
 `;
 
 // 로고
-const Logo = styled.div`
+const Logo = styled(Link)`
     font-size: 1.4rem;
     letter-spacing: 2px;
     color: ${oc.teal[7]};
     font-family: 'Rajdhani';
+    text-decoration: none;
 `;
 
 // 중간 여백
@@ -64,7 +66,7 @@ const Header = ({ children }) => {
 		<Positioner>
 			<WhiteBackground>
 				<HeaderContents>
-					<Logo>HEURM</Logo>
+					<Logo to="/">HEURM</Logo>
 					<Spacer />
 					{children}
 				</HeaderContents>
