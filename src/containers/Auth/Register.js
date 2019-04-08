@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {isEmail, isLength, isAlphanumeric} from 'validator';
+import debounce from 'lodash/debounce';
 import * as authActions from 'redux/modules/auth';
+import * as userActions from 'redux/modules/user';
 import {
   AuthContent,
   InputWithLabel,
@@ -10,6 +12,7 @@ import {
   RightAlignedLink,
   AuthError 
 } from "components/Auth";
+import storage from 'lib/storage';
 
 class Register extends Component {
   componentWillUnmount() {
@@ -49,7 +52,7 @@ class Register extends Component {
       return true;
     },
     passwordConfirm: (value) => {
-      if (this.props.form.get('password') !== value) {
+      if (this.props.form.password !== value) {
         this.setError('비밀번호확인이 일치하지 않습니다.');
         return false;
       }
@@ -58,25 +61,25 @@ class Register extends Component {
     }
   }
 
-  handleChange = e => {
-    const { AuthActions } = this.props;
-    const { name, value } = e.target;
+  // handleChange = e => {
+  //   const { AuthActions } = this.props;
+  //   const { name, value } = e.target;
 
-    AuthActions.changeInput({
-      name,
-      value,
-      form: "register"
-    });
+  //   AuthActions.changeInput({
+  //     name,
+  //     value,
+  //     form: "register"
+  //   });
 
-     // 검증작업 진행
-     const validation = this.validate[name](value);
-     if(name.indexOf('password') > -1 || !validation) return; // 비밀번호 검증이거나, 검증 실패하면 여기서 마침
-  };
+  //    // 검증작업 진행
+  //    const validation = this.validate[name](value);
+  //    if(name.indexOf('password') > -1 || !validation) return; // 비밀번호 검증이거나, 검증 실패하면 여기서 마침
+  // };
 
   handleLocalRegister = async () => {
-    const { form, AuthActions, error, history } = this.props;
-    const { email, username, password, passwordConfirm } = form.toJS();
-
+    const { AuthActions, UserActions, error, history } = this.props;
+    const { email, username, password, passwordConfirm } = this.props.form;
+    // console.log(email, username, password, passwordConfirm)
     const { validate } = this;
 
     if (error) return; // 현재 에러가 있는 상태라면 진행하지 않음
@@ -96,9 +99,13 @@ class Register extends Component {
         username,
         password
       });
-      const loggedInfo = this.props.result.toJS();
+      const loggedInfo = this.props.result;
       console.log(loggedInfo);
       // TODO: 로그인 정보 저장 (로컬스토리지/스토어)
+      storage.set('loggedInfo', loggedInfo);
+      UserActions.setLoggedInfo(loggedInfo);
+      UserActions.setValidated(true);
+      
       history.push("/"); // 회원가입 성공시 홈페이지로 이동
     } catch (e) {
       // 에러 처리하기
@@ -114,10 +121,58 @@ class Register extends Component {
     }
   };
 
+  checkEmailExists = debounce(async (email) => {
+    const { AuthActions } = this.props;
+    try {
+      await AuthActions.checkEmailExists(email);
+      if (this.props.exists.email) {
+        this.setError('이미 존재하는 이메일입니다.');
+      } else {
+        this.setError(null);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },300)
+
+  checkUsernameExists = debounce(async (username) => {
+    const { AuthActions } = this.props;
+    try {
+      await AuthActions.checkUsernameExists(username);
+      if (this.props.exists.username) {
+        this.setError('이미 존재하는 아이디입니다.');
+      } else {
+        this.setError(null);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },300)
+
+  handleChange = (e) => {
+    const { AuthActions } = this.props;
+    const { name, value } = e.target;
+
+    AuthActions.changeInput({
+      name,
+      value,
+      form: 'register'
+    });
+
+    // 검증작업 진행
+    const validation = this.validate[name](value);
+    if (name.indexOf('password') > -1 || !validation) return; // 비밀번호 검증이거나, 검증 실패하면 여기서 마침
+
+    // TODO: 이메일, 아이디 중복 확인
+    const check = name === 'email' ? this.checkEmailExists : this.checkUsernameExists; // name 에 따라 이메일체크할지 아이디 체크 할지 결정
+    check(value);
+  }
+
   render() {
     const { error } = this.props;
     const { email, username, password, passwordConfirm } = this.props.form;
-    const { handleChange } = this;
+    // console.log(email, username, password, passwordConfirm)
+    const { handleChange, handleLocalRegister  } = this;
 
     return (
       <AuthContent title="회원가입">
@@ -156,7 +211,7 @@ class Register extends Component {
         {
           error && <AuthError>{error}</AuthError>
         }
-        <AuthButton>회원가입</AuthButton>
+        <AuthButton onClick={handleLocalRegister}>회원가입</AuthButton>
         <RightAlignedLink to="/auth/login">로그인</RightAlignedLink>
       </AuthContent>
     );
@@ -167,9 +222,12 @@ class Register extends Component {
 export default connect(
   (state) => ({
     form: state.auth.register.form,
-    error: state.auth.register.error
+    error: state.auth.register.error,
+    exists: state.auth.register.exists,
+    result: state.auth.result
   }),
   (dispatch) => ({
-    AuthActions: bindActionCreators(authActions, dispatch)
+    AuthActions: bindActionCreators(authActions, dispatch),
+    UserActions: bindActionCreators(userActions, dispatch)
   })
 )(Register);

@@ -9,6 +9,8 @@ const INITIALIZE_FORM = 'auth/INITIALIZE_FORM'; // form 초기화
 const LOCAL_REGISTER = 'auth/LOCAL_REGISTER'; // 이메일 가입
 const LOCAL_LOGIN = 'auth/LOCAL_LOGIN'; // 이메일 로그인
 const LOGOUT = 'auth/LOGOUT'; // 로그아웃
+const CHECK_EMAIL_EXISTS = 'auth/CHECK_EMAIL_EXISTS'; // 이메일 중복 확인
+const CHECK_USERNAME_EXISTS = 'auth/CHECK_USERNAME_EXISTS'; // 아이디 중복 확인
 
 export const changeInput = createAction(CHANGE_INPUT); //  { form, name, value }
 export const initializeForm = createAction(INITIALIZE_FORM); // form 
@@ -16,6 +18,8 @@ export const setError = createAction(SET_ERROR); // { form, message }
 export const localRegister = createAction(LOCAL_REGISTER, AuthAPI.localRegister); // { email, username, password }
 export const localLogin = createAction(LOCAL_LOGIN, AuthAPI.localLogin); // { email, password }
 export const logout = createAction(LOGOUT, AuthAPI.logout);
+export const checkEmailExists = createAction(CHECK_EMAIL_EXISTS, AuthAPI.checkEmailExists); // email
+export const checkUsernameExists = createAction(CHECK_USERNAME_EXISTS, AuthAPI.checkUsernameExists); // username
 
 const initialState ={
   register:{
@@ -44,20 +48,22 @@ const initialState ={
 export default handleActions({
     [CHANGE_INPUT]: (state, action) => produce(state, draft =>{
       if(action.payload.form==="login"){
-        draft.login = action.payload;
+        // draft.login = action.payload;
+        draft.login.form[action.payload.name]= action.payload.value;
       }else{
-        console.log(action.payload)
-        draft.register = action.payload;
+        draft.register.form[action.payload.name]= action.payload.value;
       }
     }),
     [INITIALIZE_FORM]: (state, action) => produce(state, draft =>{
-      draft = initialState[action.payload];
+      draft = initialState;
     }),
     [SET_ERROR]: (state, action) => produce(state, draft =>{
-      // draft = action.payload.message;
-      console.log(action.payload.message)
-      // const { form, message } = action.payload;
-      // return state.setIn([form, 'error'], message);
+      if(action.payload.form==="login"){
+        draft.login.error = action.payload.message;
+      }else{
+        draft.register.error = action.payload.message;
+      }
+      // console.log(action.payload)
     }),
     ...pender({
       type: LOCAL_LOGIN,
@@ -73,5 +79,21 @@ export default handleActions({
         draft.result = action.payload.data
       })
     }),
+    ...pender({
+      type: CHECK_EMAIL_EXISTS,
+      onSuccess: (state, action) => produce(state,draft =>{
+        // state.set('result', Map(action.payload.data))
+        draft.register.exists.email = action.payload.data.exists
+      })
+      // onSuccess: (state, action) => state.setIn(['register', 'exists', 'email'], action.payload.data.exists)
+    }),
+    ...pender({
+        type: CHECK_USERNAME_EXISTS,
+        onSuccess: (state, action) => produce(state,draft =>{
+          // state.set('result', Map(action.payload.data))
+          draft.register.exists.username = action.payload.data.exists
+        })
+        // onSuccess: (state, action) => state.setIn(['register', 'exists', 'username'], action.payload.data.exists)
+    })
 }, initialState);
 

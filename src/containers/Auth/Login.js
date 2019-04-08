@@ -1,10 +1,22 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
+import queryString from 'query-string';
 import * as authActions from 'redux/modules/auth';
-import { AuthContent, InputWithLabel, AuthButton, RightAlignedLink } from "components/Auth";
+import * as userActions from 'redux/modules/user';
+import storage from 'lib/storage';
+import { AuthContent, InputWithLabel, AuthButton, RightAlignedLink, AuthError } from "components/Auth";
 
 class Login extends Component {
+
+  componentDidMount() {
+    const { location } = this.props;
+    const query = queryString.parse(location.search);
+
+    if(query.expired !== undefined) {
+      this.setError('세션에 만료되었습니다. 다시 로그인하세요.')
+    }
+  }
 
   componentWillUnmount() {
     const { AuthActions } = this.props;
@@ -22,9 +34,37 @@ class Login extends Component {
     });
   }
 
+  setError = (message) => {
+    const { AuthActions } = this.props;
+    AuthActions.setError({
+        form: 'login',
+        message
+    });
+    return false;
+  }
+
+  handleLocalLogin = async () => {
+    const { form, AuthActions, UserActions, history } = this.props;
+    const { email, password } = form;
+
+    try {
+        await AuthActions.localLogin({email, password});
+        const loggedInfo = this.props.result;
+        console.log("로그인 성공")
+        UserActions.setLoggedInfo(loggedInfo);
+        history.push('/');
+        storage.set('loggedInfo', loggedInfo);
+
+    } catch (e) {
+        console.log('a');
+        this.setError('잘못된 계정정보입니다.');
+    }
+}
+
   render() {
     const { email, password } = this.props.form; // form 에서 email 과 password 값을 읽어옴
-    const { handleChange } = this;
+    const { handleChange, handleLocalLogin  } = this;
+    const { error } = this.props;
 
     return (
       <AuthContent title="로그인">
@@ -44,7 +84,10 @@ class Login extends Component {
           // autocomplete="new-password"
           onChange={handleChange}
         />
-        <AuthButton>로그인</AuthButton>
+        {
+          error && <AuthError>{error}</AuthError>
+        }
+        <AuthButton onClick={handleLocalLogin}>로그인</AuthButton>
         <RightAlignedLink to="/auth/register">회원가입</RightAlignedLink>
       </AuthContent>
     );
@@ -55,9 +98,12 @@ class Login extends Component {
 
 export default connect(
   (state) => ({
-    form: state.auth.login.form
+    form: state.auth.login.form,
+    error: state.auth.login.error,
+    result: state.auth.result
   }),
   (dispatch) => ({
-    AuthActions: bindActionCreators(authActions, dispatch)
+    AuthActions: bindActionCreators(authActions, dispatch),
+    UserActions: bindActionCreators(userActions, dispatch)
   })
 )(Login);
