@@ -26,6 +26,7 @@ class PostListContainer extends Component {
 
       if (next) {
         // 다음 불러올 포스트들이 있다면 미리 로딩을 해둔다
+        console.log(next);
         await PostsActions.prefetchPost(next);
       }
     } catch (e) {

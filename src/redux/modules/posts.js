@@ -43,6 +43,7 @@ export default handleActions(
       produce(state, draft => {
         // data 의 뒷부분에 nextData 를 붙여주고,
         // 기존의 nextData 는 비워줍니다.
+        console.log(state);
         draft.data = state.data.concat(state.nextData);
         draft.nextData = {};
       })
