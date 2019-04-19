@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Home, Auth } from './pages';
-import HeaderContainer from './containers/Base/HeaderContainer';
 import storage from 'lib/storage';
 import { connect } from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { bindActionCreators } from 'redux';
 import * as userActions from 'redux/modules/user';
-
+import { ToastContainer } from 'react-toastify';
+import HeaderContainer from './containers/Base/HeaderContainer';
+import { Home, Auth } from './pages';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 class App extends Component {
+  componentDidMount() {
+    this.initializeUserInfo();
+  }
 
   initializeUserInfo = async () => {
     const loggedInfo = storage.get('loggedInfo'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
@@ -22,11 +26,7 @@ class App extends Component {
       storage.remove('loggedInfo');
       window.location.href = '/auth/login?expired';
     }
-  }
-
-  componentDidMount() {
-    this.initializeUserInfo();
-  }
+  };
 
   render() {
     return (
@@ -34,6 +34,7 @@ class App extends Component {
         <HeaderContainer />
         <Route exact path="/" component={Home} />
         <Route path="/auth" component={Auth} />
+        <ToastContainer style={{ zIndex: 20 }} hideProgressBar position="bottom-right" />
       </div>
     );
   }
@@ -43,7 +44,7 @@ class App extends Component {
 
 export default connect(
   null,
-  (dispatch) => ({
-      UserActions: bindActionCreators(userActions, dispatch)
+  dispatch => ({
+    UserActions: bindActionCreators(userActions, dispatch)
   })
 )(App);

@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import App from './App';
 import { Provider } from 'react-redux';
-import { hot } from 'react-hot-loader'
+// import { hot } from 'react-hot-loader'
+import App from './App';
 
 const Root = ({ store }) => {
   return (
@@ -13,5 +13,5 @@ const Root = ({ store }) => {
     </Provider>
   );
 };
-
-export default hot(module)(Root);
+export default Root;
+// export default hot(module)(Root);

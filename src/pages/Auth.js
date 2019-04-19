@@ -22,18 +22,16 @@ class Auth extends Component {
   render() {
     return (
       <AuthWrapper>
-        <Route path="/auth/login" component={Login}/>
-        <Route path="/auth/register" component={Register}/>
+        <Route path="/auth/login" component={Login} />
+        <Route path="/auth/register" component={Register} />
       </AuthWrapper>
     );
   }
 }
 
 export default connect(
-  (state) => ({
-
-  }),
-  (dispatch) => ({
+  state => ({}),
+  dispatch => ({
     BaseActions: bindActionCreators(baseActions, dispatch)
   })
 )(Auth);
