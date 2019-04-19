@@ -20,16 +20,10 @@ export default handleActions(
       type: LOAD_POST,
       onSuccess: (state, action) =>
         produce(state, draft => {
+          // console.log(action.payload);
           draft.next = action.payload.data.next;
           draft.data = action.payload.data.data;
         })
-      // ...pender({
-      //   type: WRITE_POST,
-      //   onPending: state =>
-      //     produce(state, draft => {
-      //       draft.writePost.value = '';
-      //     })
-      // })
     })
   },
   initialState
