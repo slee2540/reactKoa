@@ -71,8 +71,8 @@ export default handleActions(
       type: LIKE_POST,
       onPending: (state, action) =>
         produce(state, draft => {
-          console.log(action.meta);
           const index = state.data.findIndex(post => post._id === action.meta);
+          console.log(action.meta, index);
           draft.data[index].liked = true;
           draft.data[index].likedCount += 1;
         }),

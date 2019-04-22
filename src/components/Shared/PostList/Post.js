@@ -76,9 +76,15 @@ const Content = styled.div`
   word-break: break-all;
   white-space: pre-wrap;
 `;
-const Post = ({ post }) => {
+const Post = ({ post, onToggleLike }) => {
   // const { count, username, content, comments, likesCount, createdAt } = post;
-  const { count, username, content, comments, likesCount, createdAt } = post;
+  const { _id, count, username, content, comments, likesCount, liked, createdAt } = post;
+
+  const toggleLike = () =>
+    onToggleLike({
+      postId: _id,
+      liked
+    });
 
   return (
     <Wrapper>
@@ -91,7 +97,7 @@ const Post = ({ post }) => {
         </Time>
       </PostHead>
       <Content>{content}</Content>
-      <PostFooter comments={comments} likesCount={likesCount} />
+      <PostFooter comments={comments} likesCount={likesCount} liked={liked} onToggleLike={toggleLike} />
     </Wrapper>
   );
 };

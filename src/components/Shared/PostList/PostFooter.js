@@ -64,7 +64,7 @@ const Comments = styled.div`
 const PostFooter = ({ liked, likesCount = 0, comments = [], onToggleLike, onCommentClick }) => (
   <Wrapper>
     <Likes active={liked}>
-      <GoHeart />
+      <GoHeart onClick={onToggleLike} />
       <span>좋아요 {likesCount}개</span>
     </Likes>
     <Comments>
