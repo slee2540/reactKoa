@@ -6,8 +6,8 @@ import oc from 'open-color';
 import TimeAgo from 'react-timeago';
 import koreanStrings from 'react-timeago/lib/language-strings/ko';
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
-
 import { media, shadow } from 'lib/styleUtils';
+import PostFooter from './PostFooter';
 
 const formatter = buildFormatter(koreanStrings); // 한글 형식으로 보여주기 위해 필요
 
@@ -78,7 +78,7 @@ const Content = styled.div`
 `;
 const Post = ({ post }) => {
   // const { count, username, content, comments, likesCount, createdAt } = post;
-  const { count, username, content, createdAt } = post;
+  const { count, username, content, comments, likesCount, createdAt } = post;
 
   return (
     <Wrapper>
@@ -91,6 +91,7 @@ const Post = ({ post }) => {
         </Time>
       </PostHead>
       <Content>{content}</Content>
+      <PostFooter comments={comments} likesCount={likesCount} />
     </Wrapper>
   );
 };
