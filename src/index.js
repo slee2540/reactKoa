@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import socket from 'lib/socket';
 import Root from './Root';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './redux/configureStore';
 
 const store = configureStore();
+const socketURI =
+  process.env.NODE_ENV === 'production'
+    ? `${(window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host}/ws`
+    : 'ws://localhost:4000/ws';
 
-ReactDOM.render(<Root store={store}/>, document.getElementById('root'));
+socket.initialize(store, socketURI);
+
+ReactDOM.render(<Root store={store} />, document.getElementById('root'));
 // ReactDOM.render(<Root />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

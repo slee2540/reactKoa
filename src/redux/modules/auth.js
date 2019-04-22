@@ -58,6 +58,7 @@ export default handleActions(
       }),
     [INITIALIZE_FORM]: state =>
       produce(state, draft => {
+        console.log(draft);
         draft = initialState;
       }),
     [SET_ERROR]: (state, action) =>
