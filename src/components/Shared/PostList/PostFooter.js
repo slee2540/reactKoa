@@ -68,7 +68,7 @@ const PostFooter = ({ liked, likesCount = 0, comments = [], onToggleLike, onComm
       <span>좋아요 {likesCount}개</span>
     </Likes>
     <Comments>
-      <GoComment />
+      <GoComment onClick={onCommentClick} />
       <span>덧글 {comments.length}개</span>
     </Comments>
   </Wrapper>

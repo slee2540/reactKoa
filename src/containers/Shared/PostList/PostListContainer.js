@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as postsActions from 'redux/modules/posts';
 import { toast } from 'react-toastify';
+import { setRelayoutHandler } from 'lib/withRelayout';
 
 class PostListContainer extends Component {
   prev = null;
@@ -11,11 +12,16 @@ class PostListContainer extends Component {
   componentDidMount() {
     this.load();
     window.addEventListener('scroll', this.handleScroll);
+    setRelayoutHandler(this.handleRelayout);
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
+
+  handleRelayout = () => {
+    setTimeout(() => this.masonry.masonry.layout(), 0);
+  };
 
   load = async () => {
     // 가장 최근 작성된 포스트 20개를 불러옵니다.
@@ -83,13 +89,19 @@ class PostListContainer extends Component {
     return PostsActions.likePost(postId);
   };
 
+  handleCommentClick = postId => {
+    const { PostsActions } = this.props;
+    // console.log(`이쪽: ${liked}`);
+    PostsActions.toggleComment(postId);
+    setTimeout(() => this.masonry.masonry.layout(), 0);
+  };
+
   render() {
     const { data } = this.props;
-    const { handleToggleLike } = this;
-    // console.log(`render${JSON.stringify(data)}`);
-    // console.log(`render ${data.length}`);
+    const { handleToggleLike, handleCommentClick } = this;
+
     if (data.length > 0) {
-      return <PostList posts={data} onToggleLike={handleToggleLike} />;
+      return <PostList posts={data} onToggleLike={handleToggleLike} onCommentClick={handleCommentClick} masonryRef={ref => (this.masonry = ref)} />;
     }
     return null;
   }

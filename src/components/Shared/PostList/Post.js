@@ -7,6 +7,7 @@ import TimeAgo from 'react-timeago';
 import koreanStrings from 'react-timeago/lib/language-strings/ko';
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
 import { media, shadow } from 'lib/styleUtils';
+import CommentBlockContainer from 'containers/Shared/PostList/CommentBlockContainer';
 import PostFooter from './PostFooter';
 
 const formatter = buildFormatter(koreanStrings); // 한글 형식으로 보여주기 위해 필요
@@ -76,8 +77,7 @@ const Content = styled.div`
   word-break: break-all;
   white-space: pre-wrap;
 `;
-const Post = ({ post, onToggleLike }) => {
-  // const { count, username, content, comments, likesCount, createdAt } = post;
+const Post = ({ post, onToggleLike, onCommentClick }) => {
   const { _id, count, username, content, comments, likesCount, liked, createdAt } = post;
 
   const toggleLike = () =>
@@ -85,6 +85,7 @@ const Post = ({ post, onToggleLike }) => {
       postId: _id,
       liked
     });
+  const commentClick = () => onCommentClick(_id);
 
   return (
     <Wrapper>
@@ -97,7 +98,8 @@ const Post = ({ post, onToggleLike }) => {
         </Time>
       </PostHead>
       <Content>{content}</Content>
-      <PostFooter comments={comments} likesCount={likesCount} liked={liked} onToggleLike={toggleLike} />
+      <PostFooter likesCount={likesCount} liked={liked} onToggleLike={toggleLike} onCommentClick={commentClick} comments={comments} />
+      <CommentBlockContainer post={post} />
     </Wrapper>
   );
 };
