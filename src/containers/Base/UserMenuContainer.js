@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as baseActions from 'redux/modules/base';
 import * as userActions from 'redux/modules/user';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import storage from 'lib/storage';
 
 import onClickOutside from 'react-onclickoutside';
 
 class UserMenuContainer extends Component {
-  static contextTypes = {
-    router: PropTypes.object
-  };
+  // static contextTypes = {
+  //   router: PropTypes.object
+  // };
 
   handleClickOutside = e => {
     const { BaseActions } = this.props;
@@ -33,9 +33,10 @@ class UserMenuContainer extends Component {
   };
 
   handleOpenMyHeurm = () => {
-    const { router } = this.context;
+    // const { router } = this.context;
     const { username, BaseActions } = this.props;
-    router.history.push(`/@${username}`);
+    // router.history.push(`/@${username}`);
+    window.location.href = `/@${username}`;
     BaseActions.setUserMenuVisibility(false);
   };
 
@@ -57,7 +58,6 @@ class UserMenuContainer extends Component {
     );
   }
 }
-
 export default connect(
   state => ({
     visible: state.base.userMenu.visible,
