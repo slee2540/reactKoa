@@ -4,18 +4,20 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as baseActions from 'redux/modules/base';
 import * as userActions from 'redux/modules/user';
-
+import PropTypes from 'prop-types';
 import storage from 'lib/storage';
 
 import onClickOutside from 'react-onclickoutside';
 
 class UserMenuContainer extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  };
 
-  handleClickOutside = (e) => {
-    // console.log(e.target)
+  handleClickOutside = e => {
     const { BaseActions } = this.props;
     BaseActions.setUserMenuVisibility(false);
-  }
+  };
 
   handleLogout = async () => {
     const { UserActions } = this.props;
@@ -28,11 +30,18 @@ class UserMenuContainer extends Component {
 
     storage.remove('loggedInfo');
     window.location.href = '/';
-  }
+  };
+
+  handleOpenMyHeurm = () => {
+    const { router } = this.context;
+    const { username, BaseActions } = this.props;
+    router.history.push(`/@${username}`);
+    BaseActions.setUserMenuVisibility(false);
+  };
 
   render() {
     const { visible, username } = this.props;
-    const { handleLogout } = this;
+    const { handleLogout, handleOpenMyHeurm } = this;
 
     if (!visible) {
       return null;
@@ -41,7 +50,7 @@ class UserMenuContainer extends Component {
     return (
       <UserMenu>
         <Username username={username} />
-        <UserMenuItem>나의 흐름</UserMenuItem>
+        <UserMenuItem onClick={handleOpenMyHeurm}>나의 흐름</UserMenuItem>
         <UserMenuItem>설정</UserMenuItem>
         <UserMenuItem onClick={handleLogout}>로그아웃</UserMenuItem>
       </UserMenu>
@@ -50,11 +59,11 @@ class UserMenuContainer extends Component {
 }
 
 export default connect(
-  (state) => ({
+  state => ({
     visible: state.base.userMenu.visible,
-    username: state.user.loggedInfo.username,
+    username: state.user.loggedInfo.username
   }),
-  (dispatch) => ({
+  dispatch => ({
     BaseActions: bindActionCreators(baseActions, dispatch),
     UserActions: bindActionCreators(userActions, dispatch)
   })

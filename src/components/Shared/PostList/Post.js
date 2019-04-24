@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
+import { Link } from 'react-router-dom';
 
 // Timeago 라이브러리 관련 코드 불러오기
 import TimeAgo from 'react-timeago';
 import koreanStrings from 'react-timeago/lib/language-strings/ko';
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
 import { media, shadow } from 'lib/styleUtils';
+import scuize from 'lib/scuize';
 import CommentBlockContainer from 'containers/Shared/PostList/CommentBlockContainer';
 import PostFooter from './PostFooter';
 
@@ -48,10 +50,12 @@ const UserThumbnail = styled.div`
 `;
 
 // 유저네임을 띄워줍니다
-const Username = styled.div`
+const Username = styled(Link)`
   font-weight: 500;
   margin-left: 0.3rem;
   font-size: 0.9rem;
+  color: inherit;
+  text-decoration: none;
 `;
 
 // 몇번째 생각인지 알려줍니다
@@ -91,7 +95,7 @@ const Post = ({ post, onToggleLike, onCommentClick }) => {
     <Wrapper>
       <PostHead>
         <UserThumbnail image={`/api/users/${username}/thumbnail`} />
-        <Username>{username}</Username>
+        <Username to={`/@${username}`}>{username}</Username>
         <Count>#{count}번째 생각</Count>
         <Time>
           <TimeAgo date={createdAt} formatter={formatter} />
@@ -104,4 +108,8 @@ const Post = ({ post, onToggleLike, onCommentClick }) => {
   );
 };
 
-export default Post;
+// export default Post;
+
+export default scuize(Post, function(nextProps, nextState) {
+  return this.props.post !== nextProps.post; // 포스트가 변경되었을때만 리렌더링
+});

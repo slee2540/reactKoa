@@ -5,7 +5,7 @@ import auth from './auth';
 import user from './user';
 import home from './home';
 import posts from './posts';
-
+import userPage from './userPage';
 
 export default combineReducers({
   base,
@@ -13,5 +13,6 @@ export default combineReducers({
   user,
   home,
   posts,
+  userPage,
   pender: penderReducer
 });

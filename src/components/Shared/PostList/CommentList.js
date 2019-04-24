@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
+import withRelayout from 'lib/withRelayout';
 import Comment from './Comment';
 
 const CommentListwrapper = styled.div`
@@ -25,9 +26,13 @@ class CommentList extends Component {
   };
 
   handleReadMore = () => {
+    const { limit } = this.state;
+    const { onRelayout } = this.props;
     this.setState({
-      limit: this.state.limit + 10
+      limit: limit + 10
     });
+    onRelayout();
+    // console.log('이쪽');
   };
 
   render() {
@@ -37,14 +42,14 @@ class CommentList extends Component {
     const { handleReadMore } = this;
 
     const commentList = comments.slice(0, limit).map(comment => <Comment {...comment} key={comment._id} />);
-
+    // console.log(limit, comments, commentList);
     return (
       <CommentListwrapper>
         {commentList}
-        {limit < comments.size && <ReadMore onClick={handleReadMore}>{comments.size - limit}개 더 보기</ReadMore>}
+        {limit < comments.length ? <ReadMore onClick={handleReadMore}>{comments.length - limit}개 더 보기</ReadMore> : null}
       </CommentListwrapper>
     );
   }
 }
 
-export default CommentList;
+export default withRelayout(CommentList);

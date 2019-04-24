@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as userActions from 'redux/modules/user';
 import { ToastContainer } from 'react-toastify';
+import { Home, Auth, User } from 'pages';
 import HeaderContainer from './containers/Base/HeaderContainer';
-import { Home, Auth } from './pages';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 class App extends Component {
@@ -34,6 +34,7 @@ class App extends Component {
         <HeaderContainer />
         <Route exact path="/" component={Home} />
         <Route path="/auth" component={Auth} />
+        <Route path="/@:username" component={User} />
         <ToastContainer style={{ zIndex: 20 }} hideProgressBar position="bottom-right" />
       </div>
     );

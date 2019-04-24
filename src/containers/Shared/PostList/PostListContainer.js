@@ -15,6 +15,13 @@ class PostListContainer extends Component {
     setRelayoutHandler(this.handleRelayout);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // username 이 변경되면 this.load 를 호출합니다
+    if (prevProps.username !== this.props.username) {
+      this.load();
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
@@ -25,12 +32,12 @@ class PostListContainer extends Component {
 
   load = async () => {
     // 가장 최근 작성된 포스트 20개를 불러옵니다.
-    const { PostsActions } = this.props;
+    const { PostsActions, username } = this.props;
 
     try {
       // const result = await this.newMethod(PostsActions);
       // console.log(result);
-      await PostsActions.loadPost();
+      await PostsActions.loadPost(username);
       const { next } = this.props;
 
       // console.log(`Next : ${next}`);
